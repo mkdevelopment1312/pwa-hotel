@@ -13,7 +13,7 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     
     <!-- PWA manifest -->
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/pwa-hotel/manifest.json" />
     <meta name="theme-color" content="#FFD700" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -27,80 +27,13 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              'montserrat': ['Montserrat', 'sans-serif'],
-              'inter': ['Inter', 'sans-serif']
-            },
-            colors: {
-              'gold': '#B8860B',
-              'gold-light': '#DAA520',
-              'gold-dark': '#8B6914',
-              'platinum': '#E5E4E2',
-              'platinum-light': '#F5F5F5',
-              'platinum-dark': '#C0C0C0',
-              'charcoal': '#1C1C1C',
-              'charcoal-light': '#2D2D2D',
-              'charcoal-lighter': '#3A3A3A',
-              'slate': '#4A5568',
-              'slate-light': '#718096'
-            },
-            animation: {
-              'float': 'float 8s ease-in-out infinite',
-              'glow': 'glow 3s ease-in-out infinite alternate',
-              'slide-up': 'slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              'slide-down': 'slideDown 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              'fade-in': 'fadeIn 0.8s ease-out',
-              'scale-in': 'scaleIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              'professional-hover': 'professionalHover 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-            },
-            keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-                '25%': { transform: 'translateY(-8px) rotate(1deg)' },
-                '50%': { transform: 'translateY(-12px) rotate(0deg)' },
-                '75%': { transform: 'translateY(-8px) rotate(-1deg)' }
-              },
-              glow: {
-                '0%': { 
-                  boxShadow: '0 0 20px rgba(184, 134, 11, 0.2)',
-                  transform: 'scale(1)'
-                },
-                '100%': { 
-                  boxShadow: '0 0 40px rgba(184, 134, 11, 0.4)',
-                  transform: 'scale(1.02)'
-                }
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(40px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' }
-              },
-              slideDown: {
-                '0%': { transform: 'translateY(-40px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' }
-              },
-              fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' }
-              },
-              scaleIn: {
-                '0%': { opacity: '0', transform: 'scale(0.9)' },
-                '100%': { opacity: '1', transform: 'scale(1)' }
-              },
-              professionalHover: {
-                '0%': { transform: 'translateY(0) scale(1)' },
-                '100%': { transform: 'translateY(-4px) scale(1.02)' }
-              }
-            }
-          }
-        }
-      }
-    </script>
+    <!-- Meta tags for mobile optimization -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Hotel 5Star">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <style>
       .luxury-shadow {
@@ -226,10 +159,10 @@
     <script type="module" src="/src/main.tsx"></script>
     
     <script>
-      // Register service worker
+      // Register service worker with correct base path
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
+          navigator.serviceWorker.register('/pwa-hotel/service-worker.js')
             .then((registration) => {
               console.log('SW registered: ', registration);
             })
