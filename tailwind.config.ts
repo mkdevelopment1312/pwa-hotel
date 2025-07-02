@@ -61,7 +61,40 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Hotel luxury colors
+				charcoal: {
+					DEFAULT: '#1a1a1a',
+					50: '#f6f6f6',
+					100: '#e7e7e7',
+					200: '#d1d1d1',
+					300: '#b0b0b0',
+					400: '#888888',
+					500: '#6d6d6d',
+					600: '#5d5d5d',
+					700: '#4f4f4f',
+					800: '#454545',
+					900: '#3d3d3d',
+					950: '#1a1a1a'
+				},
+				gold: {
+					DEFAULT: '#FFD700',
+					50: '#fffdf0',
+					100: '#fffbeb',
+					200: '#fef3c7',
+					300: '#fde68a',
+					400: '#fcd34d',
+					500: '#fbbf24',
+					600: '#f59e0b',
+					700: '#d97706',
+					800: '#b45309',
+					900: '#92400e',
+					950: '#FFD700'
 				}
+			},
+			fontFamily: {
+				montserrat: ['Montserrat', 'sans-serif'],
+				inter: ['Inter', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
