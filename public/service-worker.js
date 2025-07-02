@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'hotel-5star-v5';
+const CACHE_NAME = 'hotel-5star-v6'; // Updated to force cache refresh
 const urlsToCache = [
   '/pwa-hotel/',
   '/pwa-hotel/manifest.json',
