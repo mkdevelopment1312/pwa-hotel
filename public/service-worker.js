@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'hotel-5star-v2';
+const CACHE_NAME = 'hotel-5star-v3-' + new Date().getTime();
 const urlsToCache = [
   '/pwa-hotel/',
   '/pwa-hotel/manifest.json',
