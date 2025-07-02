@@ -84,7 +84,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark text-white">
+    <div className="min-h-screen bg-charcoal text-white">
       {renderScreen()}
     </div>
   );

@@ -98,6 +98,10 @@ All colors MUST be HSL.
   body {
     @apply bg-charcoal text-white font-montserrat;
   }
+  
+  html {
+    @apply bg-charcoal;
+  }
 }
 
 /* Custom utility classes */
