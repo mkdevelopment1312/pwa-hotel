@@ -10,6 +10,7 @@ permissions:
   pages: write
   id-token: write
   actions: write  # Added for workflow cancellation
+  deployments: write  # Added for deployment management
 
 # Allow only one concurrent deployment, cancelling in-progress runs
 concurrency:
@@ -56,15 +57,110 @@ jobs:
       with:
         path: './dist'
         
-    - name: Wait for any pending deployments
+    - name: Cancel pending deployments
       run: |
-        echo "Waiting 90 seconds for any pending deployments to complete..."
-        sleep 90
+        echo "🔍 Checking for pending GitHub Pages deployments..."
+        
+        # Install jq if not available
+        sudo apt-get update && sudo apt-get install -y jq
+        
+        # Get all deployments (not just pending ones)
+        echo "📋 Fetching all deployments..."
+        DEPLOYMENTS=$(curl -s -H "Accept: application/vnd.github+json" \
+                           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                           "https://api.github.com/repos/${{ github.repository }}/pages/deployments")
+        
+        echo "🔍 Found deployments:"
+        echo "$DEPLOYMENTS" | jq -r '.[] | "\(.id): \(.status)"' || echo "No deployments found"
+        
+        # Get pending and in_progress deployments
+        PENDING_IDS=$(echo "$DEPLOYMENTS" | jq -r '.[] | select(.status == "pending" or .status == "in_progress") | .id' 2>/dev/null || echo "")
+        
+        # Cancel each pending deployment
+        if [ ! -z "$PENDING_IDS" ]; then
+            echo "🛑 Found deployments to cancel:"
+            for deployment_id in $PENDING_IDS; do
+                if [ ! -z "$deployment_id" ] && [ "$deployment_id" != "null" ]; then
+                    echo "🛑 Cancelling deployment $deployment_id..."
+                    CANCEL_RESPONSE=$(curl -s -w "HTTP_STATUS:%{http_code}" \
+                         -X POST \
+                         -H "Accept: application/vnd.github+json" \
+                         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                         "https://api.github.com/repos/${{ github.repository }}/pages/deployments/$deployment_id/cancel")
+                    HTTP_STATUS=$(echo $CANCEL_RESPONSE | tr -d '\n' | sed -e 's/.*HTTP_STATUS://')
+                    if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 202 ]; then
+                        echo "✅ Successfully cancelled deployment $deployment_id"
+                    else
+                        echo "⚠️ Failed to cancel deployment $deployment_id (HTTP $HTTP_STATUS)"
+                    fi
+                fi
+            done
+            
+            echo "⏳ Waiting 45 seconds for cancellations to process..."
+            sleep 45
+            
+            # Verify cancellations
+            echo "🔍 Verifying cancellations..."
+            REMAINING=$(curl -s -H "Accept: application/vnd.github+json" \
+                             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                             "https://api.github.com/repos/${{ github.repository }}/pages/deployments" | \
+                        jq -r '.[] | select(.status == "pending" or .status == "in_progress") | .id' 2>/dev/null || echo "")
+            
+            if [ ! -z "$REMAINING" ]; then
+                echo "⚠️ Some deployments are still pending/in-progress:"
+                for id in $REMAINING; do
+                    echo "  - $id"
+                done
+                echo "⏳ Waiting additional 30 seconds..."
+                sleep 30
+            else
+                echo "✅ All deployments cancelled successfully"
+            fi
+        else
+            echo "✅ No pending deployments found"
+        fi
         
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
       with:
-        timeout: 900000  # 15 minutes
-        error_count: 20  # More retries
+        timeout: 600000  # 10 minutes (maximum allowed)
+        error_count: 30  # More retries
         reporting_interval: 10000
+      continue-on-error: true
+      
+    - name: Retry deployment if failed
+      if: steps.deployment.outcome == 'failure'
+      run: |
+        echo "🔄 First deployment attempt failed, waiting and retrying..."
+        echo "⏳ Waiting 60 seconds before retry..."
+        sleep 60
+        
+        # Cancel any remaining deployments before retry
+        echo "🔍 Checking for any remaining deployments before retry..."
+        REMAINING=$(curl -s -H "Accept: application/vnd.github+json" \
+                         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                         "https://api.github.com/repos/${{ github.repository }}/pages/deployments" | \
+                    jq -r '.[] | select(.status == "pending" or .status == "in_progress") | .id' 2>/dev/null || echo "")
+        
+        for deployment_id in $REMAINING; do
+            if [ ! -z "$deployment_id" ] && [ "$deployment_id" != "null" ]; then
+                echo "🛑 Cancelling remaining deployment $deployment_id..."
+                curl -s -X POST \
+                     -H "Accept: application/vnd.github+json" \
+                     -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                     "https://api.github.com/repos/${{ github.repository }}/pages/deployments/$deployment_id/cancel"
+            fi
+        done
+        
+        echo "⏳ Waiting 30 seconds after cleanup..."
+        sleep 30
+        
+    - name: Deploy to GitHub Pages (Retry)
+      if: steps.deployment.outcome == 'failure'
+      id: deployment-retry
+      uses: actions/deploy-pages@v4
+      with:
+        timeout: 600000  # 10 minutes
+        error_count: 20
+        reporting_interval: 15000
