@@ -83,7 +83,7 @@ const swPath = path.join(distPath, 'service-worker.js');
 if (fs.existsSync(swPath)) {
   const swContent = fs.readFileSync(swPath, 'utf8');
   const hasCorrectPaths = swContent.includes('/pwa-hotel/');
-  const hasVersionBump = swContent.includes('hotel-5star-v') && (swContent.includes('v2') || swContent.includes('v3'));
+  const hasVersionBump = swContent.includes('hotel-5star-v') && /hotel-5star-v\d+/.test(swContent);
   
   console.log(`${hasCorrectPaths ? '✅' : '❌'} Service worker uses correct base paths`);
   console.log(`${hasVersionBump ? '✅' : '❌'} Service worker version updated`);

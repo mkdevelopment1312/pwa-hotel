@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'hotel-5star-v3-' + new Date().getTime();
+const CACHE_NAME = 'hotel-5star-v5';
 const urlsToCache = [
   '/pwa-hotel/',
   '/pwa-hotel/manifest.json',
@@ -24,8 +24,13 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+  // Skip cross-origin requests and non-GET requests
+  if (!event.request.url.startsWith(self.location.origin) || event.request.method !== 'GET') {
+    return;
+  }
+
+  // Skip GitHub Pages specific URLs that might cause issues
+  if (event.request.url.includes('/_actions/') || event.request.url.includes('/.git/')) {
     return;
   }
 
@@ -49,6 +54,9 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME)
             .then((cache) => {
               cache.put(event.request, responseToCache);
+            })
+            .catch((error) => {
+              console.warn('Failed to cache resource:', error);
             });
 
           return response;
@@ -56,6 +64,10 @@ self.addEventListener('fetch', (event) => {
       })
       .catch((error) => {
         console.error('Fetch failed:', error);
+        // Return a fallback response for offline scenario
+        if (event.request.mode === 'navigate') {
+          return caches.match('/pwa-hotel/');
+        }
         throw error;
       })
   );

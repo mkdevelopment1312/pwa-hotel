@@ -38,6 +38,9 @@ jobs:
     - name: Build
       run: npm run build
       
+    - name: Verify build
+      run: npm run verify
+      
     - name: Setup Pages
       uses: actions/configure-pages@v4
       
@@ -45,6 +48,11 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         path: './dist'
+        
+    - name: Wait for any pending deployments
+      run: |
+        echo "Waiting 30 seconds for any pending deployments to complete..."
+        sleep 30
         
     - name: Deploy to GitHub Pages
       id: deployment

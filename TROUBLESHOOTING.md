@@ -28,6 +28,42 @@ Jeśli po deploymencie nadal widzisz błędy typu:
    - GitHub Pages może potrzebować 5-10 minut na pełną propagację
    - Sprawdź stronę w trybie incognito
 
+## Problem: GitHub Pages deployment conflict
+
+Jeśli widzisz błąd typu:
+```
+Error: Deployment request failed for [...] due to in progress deployment. 
+Please cancel [...] first or wait for it to complete.
+```
+
+### Rozwiązanie:
+
+1. **Automatyczne naprawienie:**
+   ```bash
+   npm run fix-deploy
+   ```
+   
+2. **Zbuduj i zweryfikuj:**
+   ```bash
+   npm run build:verify
+   ```
+   
+3. **Wypchnij zmiany:**
+   ```bash
+   git add .
+   git commit -m "Fix deployment conflicts - update SW cache version"
+   git push origin main
+   ```
+
+4. **Poczekaj na deployment:**
+   - GitHub Actions automatycznie anuluje poprzednie deploymenty
+   - Sprawdź status na: https://github.com/mkdevelopment1312/pwa-hotel/actions
+
+### Co robi fix-deploy:
+- Aktualizuje wersję cache w service workerze (usuwa timestamp conflicts)
+- Dodaje lepsze error handling w SW
+- Filtruje problematyczne requesty GitHub Actions
+
 ## Weryfikacja lokalnie
 
 Użyj polecenia:

@@ -1,0 +1,9 @@
+<!-- Single Page Application (SPA) fallback for GitHub Pages -->
+<script>
+  // Store the current location before redirect
+  sessionStorage.setItem('redirect', window.location.href);
+  
+  // Redirect to index.html with path as query parameter
+  window.location.replace(window.location.origin + '/pwa-hotel/?redirect=' + 
+    encodeURIComponent(window.location.pathname + window.location.search + window.location.hash));
+</script>

@@ -12,7 +12,9 @@
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist",
     "verify": "node verify-build.js",
-    "build:verify": "npm run build && npm run verify"
+    "build:verify": "npm run build && npm run verify",
+    "fix-deploy": "node fix-deployment.js",
+    "check-deploy": "node check-deployment.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
