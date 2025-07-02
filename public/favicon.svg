@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" fill="#2A2A2A" rx="6"/>
+  <rect x="4" y="8" width="24" height="16" fill="url(#goldGrad)" rx="2"/>
+  <rect x="6" y="10" width="20" height="12" fill="#2A2A2A" rx="1"/>
+  <circle cx="24" cy="12" r="1.5" fill="url(#goldGrad)"/>
+  <rect x="8" y="12" width="2" height="8" fill="url(#goldGrad)"/>
+  <rect x="11" y="12" width="2" height="8" fill="url(#goldGrad)"/>
+  <rect x="14" y="12" width="2" height="8" fill="url(#goldGrad)"/>
+  <rect x="17" y="12" width="2" height="8" fill="url(#goldGrad)"/>
+  <polygon points="16,4 20,8 12,8" fill="url(#goldGrad)"/>
+  <circle cx="16" cy="6" r="1" fill="#FFD700"/>
+</svg>
